@@ -29,7 +29,9 @@ for f in tqdm(files):
     spectrums = [s for s in load_from_mgf(f_)]
     for s in spectrums:
         if 'precursor_intensity' not in list(s.metadata.keys()):
-            continue   
+            continue
+        if len(s.intensities[s.intensities >= 0.05]) <= 4:
+            continue
         if np.min(np.abs(s.metadata['precursor_mz'] - challenge_['Precursor m/z (Da)'])) < 0.01:
             w = np.argmin(np.abs(s.metadata['precursor_mz'] - challenge_['Precursor m/z (Da)']))
             if abs(challenge_['RT [min]'].values[w] * 60 - s.metadata['retention_time']) < 15:
@@ -64,13 +66,13 @@ for f in tqdm(files):
 challenge_ms = [s for s in challenge_ms if s is not None]
 save_as_mgf(list(challenge_ms), 'save/casmi_2022_challenge_bonus.mgf')
 
-'''
+
 for i, s in enumerate(challenge_ms):
-    save_as_msp([challenge_ms[i]], 'save/casmi_2022_bonus_msp/casmi_2022_challenge_bonus_{}.msp'.format(i))
-    with open('save/casmi_2022_bonus_msp/casmi_2022_challenge_bonus_{}.msp'.format(i)) as msp:
+    msp_path = 'save/casmi_2022_bonus_msp/{}.msp'.format(challenge_ms[i].metadata['compound_name'])
+    save_as_msp([challenge_ms[i]], msp_path)
+    with open(msp_path) as msp:
         lines = msp.readlines()
         lines = [l.replace('_', '') for l in lines]
         lines = [l.replace('ADDUCT', 'PRECURSORTYPE') for l in lines]
-    with open('save/casmi_2022_bonus_msp/casmi_2022_challenge_bonus_{}.msp'.format(i), 'w') as msp:
+    with open(msp_path, 'w') as msp:
         msp.writelines(lines)
-'''

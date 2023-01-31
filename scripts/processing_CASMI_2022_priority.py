@@ -29,10 +29,11 @@ for f in tqdm(files):
     spectrums = [s for s in load_from_mgf(f_)]
     for s in spectrums:
         if 'precursor_intensity' not in list(s.metadata.keys()):
-            continue   
+            continue
+        intensities = s.intensities / max(s.intensities)
         if np.min(np.abs(s.metadata['precursor_mz'] - challenge_['Precursor m/z (Da)'])) < 0.01:
             w = np.argmin(np.abs(s.metadata['precursor_mz'] - challenge_['Precursor m/z (Da)']))
-            if abs(challenge_['RT [min]'].values[w] * 60 - s.metadata['retention_time']) < 15:
+            if abs(challenge_['RT [min]'].values[w] * 60 - s.metadata['retention_time']) < 5:
                 i = challenge_.index[w]
                 name = 'casmi_2022_challenge_priority_{}'.format(i)
                 smi = challenge_.loc[i, 'SMILES']
@@ -57,7 +58,6 @@ for f in tqdm(files):
                 if challenge_ms[i] is None:
                     challenge_ms[i] = spectrum_processing(s_new)
                 else:
-
                     if challenge_ms[i].metadata['precursor_intensity'] < s.metadata['precursor_intensity']:
                         challenge_ms[i] = spectrum_processing(s_new)
 

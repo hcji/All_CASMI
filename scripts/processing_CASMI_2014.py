@@ -79,11 +79,11 @@ save_as_mgf(list(challenge_ms), 'save/casmi_2014_challenge_test.mgf')
 
 '''
 for i, s in enumerate(challenge_ms):
-    save_as_msp([challenge_ms[i]], 'save/casmi_2014_msp/casmi_2016_challenge_{}.msp'.format(i))
-    with open('save/casmi_2014_msp/casmi_2014_challenge_{}.msp'.format(i)) as msp:
+    save_as_msp([challenge_ms[i]], 'save/casmi_2014_msp/casmi_2014_{}.msp'.format(challenge_ms[i].metadata['compound_name']))
+    with open('save/casmi_2014_msp/casmi_2014_{}.msp'.format(challenge_ms[i].metadata['compound_name'])) as msp:
         lines = msp.readlines()
         lines = [l.replace('_', '') for l in lines]
         lines = [l.replace('ADDUCT', 'PRECURSORTYPE') for l in lines]
-    with open('save/casmi_2014_msp/casmi_2014_challenge_{}.msp'.format(i), 'w') as msp:
+    with open('save/casmi_2014_msp/casmi_2014_{}.msp'.format(challenge_ms[i].metadata['compound_name']), 'w') as msp:
         msp.writelines(lines)
-'''    
+'''
